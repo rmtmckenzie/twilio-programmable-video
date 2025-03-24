@@ -68,7 +68,7 @@ class VideoCapturerHandler {
                 }
             }
 
-            val source = videoCapturerMap["source"] as Map<String, Any?>
+            val source = videoCapturerMap["source"] as Map<*, *>
             val cameraId = source["cameraId"] as String?
 
             // Check type because we may want to add support for ScreenCapturer
@@ -84,7 +84,7 @@ class VideoCapturerHandler {
 
         @JvmStatic
         private fun initializeCamera2Capturer(videoCapturerMap: Map<*, *>, result: MethodChannel.Result) {
-            val source = videoCapturerMap["source"] as Map<String, Any?>
+            val source = videoCapturerMap["source"] as Map<*, *>
             val cameraId = source["cameraId"] as String?
             if (!TwilioProgrammableVideoPlugin.cameraEnumerator.deviceNames.contains(cameraId))
                 return result.error("MISSING_CAMERA", "No camera found for $cameraId.", null)

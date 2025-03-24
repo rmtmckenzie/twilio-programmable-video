@@ -2,7 +2,7 @@ group 'twilio.flutter.twilio_programmable_video'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.8.+'
+    ext.kotlin_version = "1.8.22"
     ext.twilio_video_version = '6.4.+'
     repositories {
         google()
@@ -10,48 +10,55 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.9.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath("com.android.tools.build:gradle:8.7.3")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
         mavenCentral()
     }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
 
 android {
-    namespace "twilio.flutter.twilio_programmable_video"
-    compileSdkVersion 35
+    if (project.android.hasProperty("namespace")) {
+        namespace "twilio.flutter.twilio_programmable_video"
+    }
+
+    compileSdk 35
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+
     defaultConfig {
         minSdkVersion 21
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    dependencies {
+        implementation "com.twilio:video-android:$twilio_video_version"
+    }
+
     lintOptions {
         disable 'InvalidPackage'
     }
 
-//    compileOptions {
-//        sourceCompatibility 1.8
-//        targetCompatibility 1.8
-//    }
-
     buildFeatures {
         viewBinding true
     }
-}
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.twilio:video-android:$twilio_video_version"
 }
