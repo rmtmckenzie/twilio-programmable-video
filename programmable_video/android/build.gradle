@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.android.tools.build:gradle:8.9.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -27,7 +27,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdkVersion 31
+    namespace "twilio.flutter.twilio_programmable_video"
+    compileSdkVersion 35
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -40,10 +41,10 @@ android {
         disable 'InvalidPackage'
     }
 
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
+//    compileOptions {
+//        sourceCompatibility 1.8
+//        targetCompatibility 1.8
+//    }
 
     buildFeatures {
         viewBinding true
