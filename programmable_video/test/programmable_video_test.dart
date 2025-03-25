@@ -114,7 +114,7 @@ void main() {
         return null;
       });
 
-      final result = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophone();
+      final result = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophoneAndBluetoothConnect();
 
       expect(result, true);
       expect(nativeRequestPermissionsIsCalled, true);
@@ -143,7 +143,7 @@ void main() {
         return null;
       });
 
-      final result = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophone();
+      final result = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophoneAndBluetoothConnect();
 
       expect(result, true);
       expect(nativeRequestPermissionsIsCalled, true);
@@ -169,7 +169,7 @@ void main() {
         return null;
       });
 
-      final result = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophone();
+      final result = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophoneAndBluetoothConnect();
 
       expect(result, false);
       expect(nativeRequestPermissionsIsCalled, true);
