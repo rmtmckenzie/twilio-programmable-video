@@ -161,30 +161,55 @@ class TwilioProgrammableVideo {
   /// Request permission for camera and microphone.
   ///
   /// Uses the PermissionHandler plugin. Returns the granted result.
-  static Future<bool> requestPermissionForCameraAndMicrophone() async {
+  static Future<bool> requestPermissionForCameraAndMicrophoneAndBluetoothConnect() async {
     if (kIsWeb) {
       return true;
     }
 
-    await [Permission.camera, Permission.microphone].request();
-    final micPermission = await Permission.microphone.status;
-    final camPermission = await Permission.camera.status;
-    _log('Permissions => Microphone: $micPermission, Camera: $camPermission');
+    if (Platform.isAndroid) {
+      await [Permission.camera, Permission.microphone, Permission.bluetoothConnect].request();
+      final micPermission = await Permission.microphone.status;
+      final camPermission = await Permission.camera.status;
+      final bluetoothConnectPermission = await Permission.bluetoothConnect.status;
+      _log('Permissions => Microphone: $micPermission, Camera: $camPermission, Bluetooth: $bluetoothConnectPermission');
 
-    if (micPermission == PermissionStatus.granted && camPermission == PermissionStatus.granted) {
-      return true;
+      if (micPermission == PermissionStatus.granted && camPermission == PermissionStatus.granted && bluetoothConnectPermission == PermissionStatus.granted) {
+        return true;
+      }
+
+      if (micPermission == PermissionStatus.denied || camPermission == PermissionStatus.denied || bluetoothConnectPermission == PermissionStatus.denied) {
+        return requestPermissionForCameraAndMicrophoneAndBluetoothConnect();
+      }
+
+      if (micPermission == PermissionStatus.permanentlyDenied || camPermission == PermissionStatus.permanentlyDenied) {
+        _log('Permissions => Opening App Settings');
+        await openAppSettings();
+      }
+
+      return false;
+    } else { // iOS
+
+      await [Permission.camera, Permission.microphone].request();
+      final micPermission = await Permission.microphone.status;
+      final camPermission = await Permission.camera.status;
+      _log('Permissions => Microphone: $micPermission, Camera: $camPermission');
+
+      if (micPermission == PermissionStatus.granted && camPermission == PermissionStatus.granted) {
+        return true;
+      }
+
+      if (micPermission == PermissionStatus.denied || camPermission == PermissionStatus.denied) {
+        return requestPermissionForCameraAndMicrophoneAndBluetoothConnect();
+      }
+
+      if (micPermission == PermissionStatus.permanentlyDenied || camPermission == PermissionStatus.permanentlyDenied) {
+        _log('Permissions => Opening App Settings');
+        await openAppSettings();
+      }
+
+      return false;
     }
 
-    if (micPermission == PermissionStatus.denied || camPermission == PermissionStatus.denied) {
-      return requestPermissionForCameraAndMicrophone();
-    }
-
-    if (micPermission == PermissionStatus.permanentlyDenied || camPermission == PermissionStatus.permanentlyDenied) {
-      _log('Permissions => Opening App Settings');
-      await openAppSettings();
-    }
-
-    return false;
   }
 
   /// Connect to a [Room].
@@ -195,7 +220,7 @@ class TwilioProgrammableVideo {
   /// Throws [InitializationException] if an error is caught when attempting to connect.
   /// Throws [ActiveCallException] if it fails to get AudioFocus on Android, or activate its AVAudioSession on iOS.
   static Future<Room> connect(ConnectOptions connectOptions) async {
-    if (await requestPermissionForCameraAndMicrophone()) {
+    if (await requestPermissionForCameraAndMicrophoneAndBluetoothConnect()) {
       try {
         final roomId = await ProgrammableVideoPlatform.instance.connectToRoom(connectOptions.toModel());
         if (roomId == null) {

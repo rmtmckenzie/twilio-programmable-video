@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import androidx.core.content.IntentCompat
+import androidx.core.os.BundleCompat
 
 class AudioNotificationListener() : BaseListener() {
     private val TAG = "AudioNotificationListener"
@@ -92,8 +94,7 @@ class AudioNotificationListener() : BaseListener() {
 
                 val event = if (connected) "newDeviceAvailable" else "oldDeviceUnavailable"
 
-                val deviceName = if (bluetoothEvent) intent?.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)?.name
-                    else intent?.getStringExtra("portName") ?: return
+                val deviceName = if (bluetoothEvent && intent != null) IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)?.name else intent?.getStringExtra("portName") ?: return;
 
                 debug("onReceive => connected: $connected\n\tevent: $event\n\tbluetoothEvent: $bluetoothEvent\n\twiredEvent: $wiredEvent\n\tdeviceName: $deviceName")
 
